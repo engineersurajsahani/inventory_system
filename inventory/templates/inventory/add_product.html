@@ -1,0 +1,87 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block content %}
+<h4 class="center-align">
+    {% if 'edit' in request.path %}
+        Edit Product
+    {% else %}
+        Add Product
+    {% endif %}
+</h4>
+
+<div class="row">
+    <div class="col s12 m8 offset-m2">
+        <div class="card">
+            <div class="card-content">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {{ form.name }}
+                            <label for="{{ form.name.id_for_label }}">Product Name</label>
+                            {% if form.name.errors %}
+                                <span class="helper-text red-text">{{ form.name.errors }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {{ form.category }}
+                            <label>Category</label>
+                            {% if form.category.errors %}
+                                <span class="helper-text red-text">{{ form.category.errors }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="input-field col s6">
+                            {{ form.quantity }}
+                            <label for="{{ form.quantity.id_for_label }}">Quantity</label>
+                            {% if form.quantity.errors %}
+                                <span class="helper-text red-text">{{ form.quantity.errors }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="input-field col s6">
+                            {{ form.price }}
+                            <label for="{{ form.price.id_for_label }}">Price</label>
+                            {% if form.price.errors %}
+                                <span class="helper-text red-text">{{ form.price.errors }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {{ form.description }}
+                            <label for="{{ form.description.id_for_label }}">Description</label>
+                            {% if form.description.errors %}
+                                <span class="helper-text red-text">{{ form.description.errors }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col s12 center-align">
+                            <button class="btn waves-effect waves-light blue darken-3" type="submit">
+                                {% if 'edit' in request.path %}
+                                    Update <i class="material-icons right">save</i>
+                                {% else %}
+                                    Add <i class="material-icons right">add</i>
+                                {% endif %}
+                            </button>
+                            <a href="{% url 'products' %}" class="btn waves-effect waves-light grey">
+                                Cancel <i class="material-icons right">cancel</i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

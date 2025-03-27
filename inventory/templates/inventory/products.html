@@ -1,0 +1,79 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block content %}
+<h4 class="center-align">Product Management</h4>
+
+<div class="row">
+    <div class="col s12">
+        <div class="card">
+            <div class="card-content">
+                <div class="row">
+                    <div class="col s6">
+                        <span class="card-title">Products</span>
+                    </div>
+                    <div class="col s6 right-align">
+                        <a href="{% url 'add_product' %}" class="btn waves-effect waves-light blue darken-3">
+                            <i class="material-icons left">add</i>Add Product
+                        </a>
+                    </div>
+                </div>
+                
+                <table class="highlight responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.get_category_display }}</td>
+                            <td>
+                                {{ product.quantity }}
+                                {% if product.quantity < 10 %}
+                                    <span class="new badge red" data-badge-caption="Low"></span>
+                                {% endif %}
+                            </td>
+                            <td>${{ product.price }}</td>
+                            <td>
+                                <a href="{% url 'edit_product' product.pk %}" class="btn-small waves-effect waves-light blue">
+                                    <i class="material-icons">edit</i>
+                                </a>
+                                <a href="#delete-modal-{{ product.pk }}" class="btn-small waves-effect waves-light red modal-trigger">
+                                    <i class="material-icons">delete</i>
+                                </a>
+                                
+                                <!-- Delete Modal -->
+                                <div id="delete-modal-{{ product.pk }}" class="modal">
+                                    <div class="modal-content">
+                                        <h4>Confirm Delete</h4>
+                                        <p>Are you sure you want to delete "{{ product.name }}"?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form method="post" action="{% url 'delete_product' product.pk %}">
+                                            {% csrf_token %}
+                                            <button type="button" class="modal-close btn-flat">Cancel</button>
+                                            <button type="submit" class="btn red">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="center-align">No products found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

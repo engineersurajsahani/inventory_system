@@ -1,0 +1,71 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block content %}
+<h4 class="center-align">Dashboard</h4>
+
+<div class="row">
+    <!-- Summary Cards -->
+    <div class="col s12 m4">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Total Products</span>
+                <h3>{{ total_products }}</h3>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col s12 m4">
+        <div class="card orange darken-2">
+            <div class="card-content white-text">
+                <span class="card-title">Low Stock</span>
+                <h3>{{ low_stock }}</h3>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col s12 m4">
+        <div class="card green darken-3">
+            <div class="card-content white-text">
+                <span class="card-title">Recent Activity</span>
+                <h3>{{ recent_transactions|length }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12 m8">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">Sales Trend (Last 7 Days)</span>
+                <div class="chart-container">
+                    <img src="data:image/png;base64,{{ chart_data }}" alt="Sales Chart" class="responsive-img">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col s12 m4">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">Recent Transactions</span>
+                <ul class="collection">
+                    {% for transaction in recent_transactions %}
+                    <li class="collection-item">
+                        <span class="title">{{ transaction.product.name }}</span>
+                        <p>
+                            {{ transaction.get_transaction_type_display }} - 
+                            {{ transaction.quantity }} @ ${{ transaction.price }}<br>
+                            <small>{{ transaction.transaction_date|timesince }} ago</small>
+                        </p>
+                    </li>
+                    {% empty %}
+                    <li class="collection-item">No recent transactions</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

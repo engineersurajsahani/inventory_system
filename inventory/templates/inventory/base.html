@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory System | {% block title %}{% endblock %}</title>
+    
+    <!-- Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav class="blue darken-3">
+            <div class="nav-wrapper container">
+                <a href="{% url 'dashboard' %}" class="brand-logo">Inventory System</a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <ul class="right hide-on-med-and-down">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'dashboard' %}"><i class="material-icons left">dashboard</i>Dashboard</a></li>
+                        <li><a href="{% url 'products' %}"><i class="material-icons left">inventory</i>Products</a></li>
+                        <li><a href="{% url 'bills' %}"><i class="material-icons left">receipt</i>Bills</a></li>
+                        <li><a href="{% url 'reports' %}"><i class="material-icons left">assessment</i>Reports</a></li>
+                        <li><a href="{% url 'logout' %}"><i class="material-icons left">exit_to_app</i>Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}"><i class="material-icons left">login</i>Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+
+        <ul class="sidenav" id="mobile-demo">
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'dashboard' %}"><i class="material-icons left">dashboard</i>Dashboard</a></li>
+                <li><a href="{% url 'products' %}"><i class="material-icons left">inventory</i>Products</a></li>
+                <li><a href="{% url 'bills' %}"><i class="material-icons left">receipt</i>Bills</a></li>
+                <li><a href="{% url 'reports' %}"><i class="material-icons left">assessment</i>Reports</a></li>
+                <li><a href="{% url 'logout' %}"><i class="material-icons left">exit_to_app</i>Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}"><i class="material-icons left">login</i>Login</a></li>
+            {% endif %}
+        </ul>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="page-footer blue darken-3">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="white-text">Inventory Management System</h5>
+                    <p class="grey-text text-lighten-4">Track and manage your inventory efficiently.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                © {% now "Y" %} Inventory System
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        $(document).ready(function(){
+            $('.sidenav').sidenav();
+            $('select').formSelect();
+            $('.modal').modal();
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoClose: true
+            });
+        });
+    </script>
+</body>
+</html>

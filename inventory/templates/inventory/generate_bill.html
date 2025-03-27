@@ -1,0 +1,126 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block content %}
+<h4 class="center-align">Generate Bill</h4>
+{% if messages %}
+<div class="row">
+    <div class="col s12">
+        {% for message in messages %}
+        <div class="card-panel {% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col s12">
+        <div class="card">
+            <div class="card-content">
+                <form method="post" id="bill-form">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="input-field col s6">
+                            {{ bill_form.customer_name }}
+                            <label for="{{ bill_form.customer_name.id_for_label }}">Customer Name</label>
+                        </div>
+                        <div class="input-field col s6">
+                            {{ bill_form.customer_contact }}
+                            <label for="{{ bill_form.customer_contact.id_for_label }}">Customer Contact</label>
+                        </div>
+                    </div>
+                    
+                    <h5>Items</h5>
+                    <div id="items-container">
+                        <div class="row item-row">
+                            <div class="input-field col s6">
+                                <select name="product" class="browser-default product-select">
+                                    <option value="" disabled selected>Select Product</option>
+                                    {% for product in products %}
+                                    <option value="{{ product.id }}" data-price="{{ product.price }}">
+                                        {{ product.name }} ({{ product.quantity }} in stock) - ${{ product.price }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="input-field col s4">
+                                <input type="number" name="quantity" min="1" value="1" class="quantity">
+                            </div>
+                            <div class="col s2">
+                                <button type="button" class="btn red remove-item">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col s12">
+                            <button type="button" id="add-item" class="btn waves-effect waves-light blue">
+                                <i class="material-icons left">add</i>Add Item
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col s12 center-align">
+                            <button type="submit" class="btn waves-effect waves-light green">
+                                Generate Bill <i class="material-icons right">receipt</i>
+                            </button>
+                            <a href="{% url 'bills' %}" class="btn waves-effect waves-light grey">
+                                Cancel <i class="material-icons right">cancel</i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Add new item row
+    $('#add-item').click(function() {
+        const newRow = $('.item-row').first().clone();
+        newRow.find('select').val('');
+        newRow.find('.quantity').val(1);
+        $('#items-container').append(newRow);
+        $('select').formSelect();
+    });
+    
+    // Remove item row
+    $(document).on('click', '.remove-item', function() {
+        if ($('.item-row').length > 1) {
+            $(this).closest('.item-row').remove();
+        } else {
+            M.toast({html: 'At least one item is required'});
+        }
+    });
+    
+    // Validate form before submission
+    $('#bill-form').submit(function(e) {
+        let isValid = true;
+        
+        $('.item-row').each(function() {
+            const product = $(this).find('.product-select').val();
+            const quantity = $(this).find('.quantity').val();
+            
+            if (!product || !quantity) {
+                isValid = false;
+                M.toast({html: 'Please fill all item fields'});
+                return false;
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}
